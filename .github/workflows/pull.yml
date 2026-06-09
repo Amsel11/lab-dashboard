@@ -1,0 +1,58 @@
+name: Pull projects
+
+# Rebuilds data/projects.json by scanning your repos for project.yaml files.
+# Runs on a schedule, on demand (Actions tab -> Run workflow), and whenever the
+# config or scripts change. Pushing the refreshed JSON triggers pages.yml to
+# redeploy the site.
+on:
+  schedule:
+    - cron: '*/30 * * * *'   # every 30 minutes
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths:
+      - config/sources.yaml
+      - scripts/**
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pull
+  cancel-in-progress: false
+
+jobs:
+  pull:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Use the PAT so the commit below re-triggers pages.yml (the default
+          # GITHUB_TOKEN cannot read other repos and won't chain workflows).
+          token: ${{ secrets.DASHBOARD_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install pyyaml
+        run: pip install pyyaml
+
+      - name: Pull project.yaml files
+        env:
+          GITHUB_TOKEN: ${{ secrets.DASHBOARD_TOKEN }}
+        run: python scripts/pull.py
+
+      - name: Commit refreshed board
+        run: |
+          git config user.name "lab-dashboard-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/projects.json
+          if git diff --staged --quiet; then
+            echo "No changes."
+          else
+            git commit -m "pull: refresh projects.json"
+            git push
+          fi

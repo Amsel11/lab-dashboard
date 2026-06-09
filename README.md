@@ -1,48 +1,49 @@
 # Lab Project Dashboard
 
-A **fully self-hosted, zero-subscription** dashboard for a healthcare-AI research lab.
-No Airtable, no Railway, no SaaS — just GitHub repos, GitHub Actions, and a static
-site. Built to demo today and to drop onto an internal VPN-hosted server later
-with no code changes.
+A **fully self-hosted, zero-subscription** dashboard for a healthcare-AI research
+lab. No Airtable, no Railway, no SaaS — just GitHub repos and a static site.
+Built to demo today and to drop onto an internal VPN-hosted server later with no
+code changes.
 
----
+## How it works (pull model)
 
-## How it works (plain English)
-
-Every project lives in its own GitHub repo and describes itself in a single
-`project.yaml` file. When someone edits that file and pushes, a GitHub Action
-copies the project's info into one central repo (`lab-dashboard`), which is
-published as a static website. The website reads a single JSON file and renders
-a card for every project.
+Every project lives in its **own** GitHub repo and describes itself in a single
+`project.yaml` file at the repo root. That's the *only* thing a project repo
+needs — no workflow, no secret. The central `lab-dashboard` repo periodically
+scans your account (or lab org), pulls every `project.yaml` it finds, and
+rebuilds one JSON file that a static website renders as cards.
 
 ```
-edit proj-xyz/project.yaml  ──push──▶  GitHub Action (in the project repo)
-                                              │ runs scripts/aggregate.py
-                                              ▼
-                              lab-dashboard/data/projects.json   (the "database")
-                                              │ commit + push
-                                              ▼
-                              GitHub Action (pages.yml) deploys the static site
-                                              ▼
-                       dashboard/  ──fetches──▶  data/projects.json  ──renders──▶ cards
+your project repos                    lab-dashboard (this repo)
+─────────────────                     ─────────────────────────
+proj-sepsis/project.yaml  ┐           scripts/pull.py  (runs on a schedule
+proj-agent/project.yaml   ├──scan──▶   + on demand): fetches each project.yaml,
+proj-xyz/project.yaml     ┘            rebuilds data/projects.json, commits it
+                                                    │
+                                                    ▼
+                                       pages.yml deploys the static site
+                                                    │
+                              dashboard/ ──fetch──▶ data/projects.json ──▶ cards
 ```
 
-Nothing runs continuously. There's no server to babysit. The "database" is a
-plain JSON file in git, so every change is versioned and auditable.
+Nothing runs continuously, there's no server to babysit, and **projects do not
+live inside the dashboard** — they're independent repos. The dashboard just
+reads from them.
 
 ### What's in this repo
 
 | Path | What it is |
 |------|-----------|
-| `data/projects.json` | The database — auto-updated by the aggregator. Don't hand-edit. |
-| `dashboard/` | The static site: `index.html`, `style.css`, `app.js`. No build step, no CDN. |
-| `scripts/aggregate.py` | Upserts one `project.yaml` into `projects.json`. stdlib + pyyaml only. |
+| `config/sources.yaml` | Which repos/owner to scan for `project.yaml`. |
+| `scripts/pull.py` | Scans repos, rebuilds `data/projects.json`. stdlib + pyyaml. |
+| `scripts/aggregate.py` | Single-file upsert helper + the normalize logic `pull.py` reuses. |
 | `scripts/slack_digest.py` | Optional weekly Slack summary. stdlib only. Off by default. |
-| `template/` | Copy this into a new project repo to onboard it. |
+| `data/projects.json` | The generated board — rebuilt by `pull.py`. Don't hand-edit. |
+| `dashboard/` | The static site: `index.html`, `style.css`, `app.js`. No build, no CDN. |
+| `template/project.yaml` | Copy this into any repo to make it a project. |
+| `.github/workflows/pull.yml` | Scheduled/on-demand pull + commit. |
 | `.github/workflows/pages.yml` | Deploys `dashboard/` (+ data) to GitHub Pages. |
 | `.github/workflows/slack-digest.yml` | Scheduled digest, **disabled** until you remove `if: false`. |
-
----
 
 ## The `project.yaml` schema
 
@@ -59,145 +60,100 @@ collaboration:               # collaboration or consortium (optional)
 open_to_collaborators: false
 needed_skills:               # e.g. [NLP, clinical data, statistics]
 slack_channel:               # e.g. project-sepsis (optional)
-github_repo:                 # e.g. Amsel11/proj-demo-sepsis (auto-filled by the Action)
+github_repo:                 # filled in automatically from the repo it's pulled from
 ```
 
-The aggregator also computes two fields automatically:
-- `last_updated` — timestamp of the last sync
-- `deadline_soon` — `true` when the deadline is within 30 days **and** status is `active` or `writing`
-
----
+Two fields are computed automatically: `last_updated` and `deadline_soon`
+(`true` when the deadline is within 30 days and status is `active`/`writing`).
+Empty optional fields (grant, collaboration, venue…) simply don't render.
 
 ## One-time setup
 
-### 1. Create the dashboard repo
+### 1. Push this repo and enable Pages
+Push `lab-dashboard/` to GitHub as a **public** repo (free Pages needs public).
+Then **Settings → Pages → Source: GitHub Actions**. The first run gives you
+`https://<owner>.github.io/lab-dashboard/`.
 
-Push this `lab-dashboard/` folder to GitHub as a repo named **`lab-dashboard`**
-(e.g. `github.com/Amsel11/lab-dashboard`). It can be public (required for free
-GitHub Pages on personal accounts) or private (Pages works on private repos for
-Pro/Org plans).
+### 2. Add ONE token to THIS repo
+The puller needs read access to your project repos (incl. private) and write
+access to push the refreshed board.
 
-### 2. Create a Personal Access Token (PAT)
+1. Create a token (classic, scope **`repo`**) at
+   <https://github.com/settings/tokens/new>.
+2. In **this** repo: **Settings → Secrets and variables → Actions → New
+   repository secret** → name **`DASHBOARD_TOKEN`**, value = the token.
 
-The project-repo Actions need permission to push into `lab-dashboard`.
+That's the only secret in the whole system, and it lives only here.
 
-1. GitHub → **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**.
-2. **Repository access:** only select repositories → `lab-dashboard`.
-3. **Permissions:** *Contents → Read and write*.
-4. Generate and copy the token (starts with `github_pat_…`).
+### 3. Point it at your repos
+Edit `config/sources.yaml`:
+```yaml
+owner: your-username-or-org   # who to scan
+include_private: true
+repo_prefix: ""               # optional; e.g. "proj-" to limit the scan
+repos: []                     # optional explicit list across accounts/orgs
+```
 
-> A classic token with the `repo` scope also works if you prefer.
+That's it. The `pull.yml` workflow runs every 30 minutes, on demand
+(**Actions → Pull projects → Run workflow**), and whenever you edit the config.
 
-### 3. Add the token as a secret in each project repo
+## Onboard a new project (the actual 10-second version)
 
-In **every project repo** (not the dashboard repo):
-**Settings → Secrets and variables → Actions → New repository secret**
-- Name: `DASHBOARD_TOKEN`
-- Value: the PAT from step 2.
+1. Add a `project.yaml` (copy `template/project.yaml`) to the **root** of the
+   project's repo. Fill it in. Commit.
+2. …that's the whole thing. The next pull picks it up, or trigger it now from
+   **Actions → Pull projects → Run workflow**.
 
-### 4. Enable GitHub Pages on `lab-dashboard`
+No workflow file, no secret, nothing to configure in the project repo. Remove
+the `project.yaml` (or the repo) and it drops off the board on the next pull.
 
-1. `lab-dashboard` → **Settings → Pages**.
-2. **Source:** *GitHub Actions* (not "Deploy from a branch").
-3. Push to `main` once — `pages.yml` runs and prints the published URL
-   (e.g. `https://Amsel11.github.io/lab-dashboard/`).
-
-That URL is your live dashboard. Bookmark it.
-
----
-
-## Onboard a new project (the 30-second version)
-
-1. In the new project repo, copy the contents of this repo's `template/` folder
-   to the repo root:
-   ```
-   project.yaml
-   .github/workflows/sync-dashboard.yml
-   ```
-2. Fill in `project.yaml`.
-3. In `.github/workflows/sync-dashboard.yml`, set the `repository:` line to your
-   dashboard repo (e.g. `Amsel11/lab-dashboard`).
-4. Add the `DASHBOARD_TOKEN` secret to the repo (see step 3 above).
-5. Commit and push. Within ~30 seconds the card appears on the dashboard.
-
-That's it. From then on, every edit to `project.yaml` updates the card
-automatically.
-
----
-
-## Test locally (no GitHub needed)
-
-Run the aggregator against a `project.yaml` with the `--local` flag:
+## Test locally (no GitHub, no token)
 
 ```bash
 cd lab-dashboard
 python3 -m venv .venv && source .venv/bin/activate
 pip install pyyaml
 
-python scripts/aggregate.py --local \
-  --file ../proj-demo-sepsis/project.yaml \
-  --repo Amsel11/proj-demo-sepsis
+# scan sibling folders on disk for project.yaml and rebuild the board:
+python scripts/pull.py --local ..
 ```
 
-This upserts into `data/projects.json` exactly like the Action does.
-
-**Preview the site locally** (the page uses `fetch`, which browsers block on
-`file://`, so serve it over HTTP):
-
+**Preview the site** (browsers block `fetch` on `file://`, so serve over HTTP):
 ```bash
-# from the lab-dashboard folder, mimic the Pages layout:
 mkdir -p _site/data && cp -R dashboard/. _site/ && cp data/projects.json _site/data/
-cd _site && python3 -m http.server 8000
-# open http://localhost:8000
+cd _site && python3 -m http.server 8000   # open http://localhost:8000
 ```
 
-> The `app.js` loader tries `data/projects.json`, then `../data/projects.json`,
-> then `projects.json`, so it works whether the site is served from the repo
-> root, from `dashboard/` with a sibling `data/`, or with the JSON copied in.
-
----
+To test the real API path locally, set a token and run without `--local`:
+```bash
+GITHUB_TOKEN=ghp_xxx python scripts/pull.py
+```
 
 ## Optional: weekly Slack digest
 
-`scripts/slack_digest.py` posts a grouped summary (by status, with deadline and
-"open to collaborators" highlights) to a Slack Incoming Webhook. It's **off by
-default**:
-
-1. Create an Incoming Webhook in Slack and copy the URL.
-2. Add it as a repo secret named `SLACK_WEBHOOK_URL`.
-3. Open `.github/workflows/slack-digest.yml` and **delete the `if: false` line**.
-
-It runs Mondays 09:00 UTC. Without `SLACK_WEBHOOK_URL` the script exits silently,
-so there's no risk in leaving it wired up.
-
----
+`scripts/slack_digest.py` posts a grouped summary to a Slack Incoming Webhook.
+Off by default: add a `SLACK_WEBHOOK_URL` secret and delete the `if: false`
+line in `.github/workflows/slack-digest.yml`. Runs Mondays 09:00 UTC.
 
 ## Future hosting (moving off GitHub)
 
 The `dashboard/` folder is a **fully static site with zero external
-dependencies** — no CDN, no fonts, no frameworks. To host it anywhere:
+dependencies** — no CDN, no fonts, no frameworks.
 
-- **Internal VPN server (nginx):** copy `dashboard/` and `data/projects.json`
-  to the server so the page can reach `data/projects.json`, then point an nginx
-  `location` at that directory. Works fully offline.
-- **Quick-and-dirty:** `cd` into a folder containing `index.html` + `data/` and
-  run `python3 -m http.server`. Done.
-- **AWS:** drop the same files in an S3 bucket behind CloudFront (or just S3
-  static hosting). No build step.
+- **Internal VPN server (nginx):** copy `dashboard/` + `data/projects.json` to
+  the server, point nginx at it. Works fully offline.
+- **Quick-and-dirty:** `python3 -m http.server` from a folder with `index.html`
+  + `data/`.
+- **AWS:** drop the files in S3 behind CloudFront. No build step.
 
-**Self-hosting the whole pipeline (no GitHub Actions):** the aggregator is a
-plain function. To replace GitHub Actions with your own server, wrap
-`aggregate.py` in a small FastAPI webhook receiver: on a push webhook (or a
-form/API call) it reads the YAML, calls the same upsert logic, and writes
-`projects.json`. The dashboard doesn't change at all — only the *trigger* does.
-No frontend code changes, no schema changes.
-
----
+**Self-hosting the pull pipeline:** `pull.py` is plain Python — run it from cron
+or a tiny FastAPI endpoint on your own box instead of GitHub Actions. It writes
+the same `projects.json`; the dashboard doesn't change at all. Only the trigger
+moves.
 
 ## Design constraints honored
 
 - Zero external services or subscriptions — only GitHub.
-- No npm, no Node, no build step — open `index.html` (over HTTP) and it works.
-- No external CDN in the frontend — runs offline behind a VPN.
-- Aggregator uses Python stdlib + pyyaml only.
-- The "database" is a versioned JSON file in git.
+- One secret total, in one repo. Project repos need only a `project.yaml`.
+- No npm/Node/build step; no CDN in the frontend (runs offline behind a VPN).
+- Python stdlib + pyyaml only. The board is a versioned JSON file in git.

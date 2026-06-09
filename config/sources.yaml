@@ -1,0 +1,16 @@
+# Where the dashboard pulls project cards from.
+#
+# The dashboard scans the repos below for a root `project.yaml`. Any repo that
+# has one becomes a card; repos without one are ignored. Project repos need
+# NOTHING else — no workflow, no secret.
+
+owner: Amsel11          # the user or org to scan (your account, or a lab org)
+include_private: true   # include private repos (requires the token to have access)
+repo_prefix: ""         # optional: only scan repos whose name starts with this
+                        #   e.g. "proj-" if you have many unrelated repos
+
+# Optional explicit allow-list. If non-empty, ONLY these are pulled and `owner`
+# scanning is skipped — useful when projects span several accounts/orgs.
+repos: []
+  # - Amsel11/proj-paper-agent
+  # - some-org/their-project
