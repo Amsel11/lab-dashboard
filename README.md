@@ -54,6 +54,8 @@ contributors:
   -
 venue:                       # e.g. NeurIPS 2026, Nature Medicine
 deadline:                    # YYYY-MM-DD (quote it, e.g. '2026-09-01')
+grant:                       # funding source / grant (optional)
+collaboration:               # collaboration or consortium (optional)
 open_to_collaborators: false
 needed_skills:               # e.g. [NLP, clinical data, statistics]
 slack_channel:               # e.g. project-sepsis (optional)

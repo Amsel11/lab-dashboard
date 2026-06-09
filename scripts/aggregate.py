@@ -41,6 +41,8 @@ DEFAULTS: dict[str, object] = {
     "contributors": [],
     "venue": "",
     "deadline": "",
+    "grant": "",
+    "collaboration": "",
     "open_to_collaborators": False,
     "needed_skills": [],
     "slack_channel": "",

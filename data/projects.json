@@ -9,6 +9,8 @@
     ],
     "venue": "FAccT 2026",
     "deadline": "2026-09-01",
+    "grant": "",
+    "collaboration": "",
     "open_to_collaborators": true,
     "needed_skills": [
       "fairness / bias auditing",
@@ -17,7 +19,26 @@
     ],
     "slack_channel": "project-ehr-fairness",
     "github_repo": "Amsel11/proj-demo-ehr-fairness",
-    "last_updated": "2026-06-09T06:30:53+00:00",
+    "last_updated": "2026-06-09T15:43:39+00:00",
+    "deadline_soon": false
+  },
+  {
+    "name": "Cross-Paper Synthesis & Ideation Agent",
+    "status": "active",
+    "description": "An LLM agent that ingests a user-defined cohort of papers and answers targeted questions across the whole set: it summarizes each paper, maps how they connect, relate, and differ, and surfaces grounded, citation-backed proposals for new research directions that emerge from the cohort as a whole.",
+    "contributors": [
+      "Annelene Schulze",
+      "Jack Markert"
+    ],
+    "venue": "",
+    "deadline": "",
+    "grant": "",
+    "collaboration": "",
+    "open_to_collaborators": false,
+    "needed_skills": [],
+    "slack_channel": "",
+    "github_repo": "Amsel11/proj-paper-agent",
+    "last_updated": "2026-06-09T15:43:39+00:00",
     "deadline_soon": false
   },
   {
@@ -30,11 +51,13 @@
     ],
     "venue": "ML4H 2026",
     "deadline": "2026-06-25",
+    "grant": "",
+    "collaboration": "",
     "open_to_collaborators": false,
     "needed_skills": [],
     "slack_channel": "project-sepsis",
     "github_repo": "Amsel11/proj-demo-sepsis",
-    "last_updated": "2026-06-09T06:30:53+00:00",
+    "last_updated": "2026-06-09T15:43:38+00:00",
     "deadline_soon": true
   },
   {
@@ -47,6 +70,8 @@
     ],
     "venue": "ACL 2026",
     "deadline": "2026-08-15",
+    "grant": "",
+    "collaboration": "",
     "open_to_collaborators": true,
     "needed_skills": [
       "NLP / LLM fine-tuning",
@@ -55,7 +80,7 @@
     ],
     "slack_channel": "project-llm-clinical",
     "github_repo": "Amsel11/proj-demo-healthllm",
-    "last_updated": "2026-06-09T06:30:53+00:00",
+    "last_updated": "2026-06-09T15:43:38+00:00",
     "deadline_soon": false
   }
 ]

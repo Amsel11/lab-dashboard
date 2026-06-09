@@ -118,21 +118,21 @@
       card.appendChild(chips);
     }
 
-    // venue + deadline
-    if (p.venue || p.deadline) {
+    // venue / deadline / grant / collaboration — show only what's set
+    var metaItems = [
+      ["Venue", p.venue],
+      ["Deadline", p.deadline ? formatDate(p.deadline) : ""],
+      ["Grant", p.grant],
+      ["Collaboration", p.collaboration]
+    ].filter(function (item) { return item[1]; });
+    if (metaItems.length) {
       var meta = el("div", "meta-row");
-      if (p.venue) {
-        var v = el("span");
-        v.appendChild(el("span", "label", "Venue"));
-        v.appendChild(document.createTextNode(p.venue));
-        meta.appendChild(v);
-      }
-      if (p.deadline) {
-        var d = el("span");
-        d.appendChild(el("span", "label", "Deadline"));
-        d.appendChild(document.createTextNode(formatDate(p.deadline)));
-        meta.appendChild(d);
-      }
+      metaItems.forEach(function (item) {
+        var span = el("span");
+        span.appendChild(el("span", "label", item[0]));
+        span.appendChild(document.createTextNode(item[1]));
+        meta.appendChild(span);
+      });
       card.appendChild(meta);
     }
 

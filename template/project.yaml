@@ -9,6 +9,8 @@ contributors:                  # list of names
   -
 venue:                         # e.g. NeurIPS 2026, Nature Medicine, ML4H 2026
 deadline:                      # YYYY-MM-DD (quote it: '2026-09-01')
+grant:                         # funding source / grant this falls under (optional)
+collaboration:                 # collaboration or consortium it's part of (optional)
 open_to_collaborators: false   # true if you want others to join
 needed_skills:                 # only shown when open_to_collaborators is true
   -
