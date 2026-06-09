@@ -1,44 +1,5 @@
 [
   {
-    "name": "Auditing Algorithmic Fairness in EHR Mortality Models",
-    "status": "writing",
-    "description": "A systematic audit of subgroup calibration and error-rate disparities across race, sex, and insurance status in widely deployed EHR mortality risk scores. We propose a reweighting-based mitigation that closes the largest disparities while preserving overall discrimination, evaluated on MIMIC-IV and a community hospital cohort.",
-    "contributors": [
-      "Annelene Schulze",
-      "David Okafor"
-    ],
-    "venue": "FAccT 2026",
-    "deadline": "2026-09-01",
-    "open_to_collaborators": true,
-    "needed_skills": [
-      "fairness / bias auditing",
-      "biostatistics",
-      "EHR data wrangling"
-    ],
-    "slack_channel": "project-ehr-fairness",
-    "github_repo": "Amsel11/proj-demo-ehr-fairness",
-    "last_updated": "2026-06-09T05:44:15+00:00",
-    "deadline_soon": false
-  },
-  {
-    "name": "Early Sepsis Prediction from ICU Time-Series",
-    "status": "active",
-    "description": "A recurrent + attention model that forecasts sepsis onset up to 6 hours ahead from streaming vitals and labs in the MIMIC-IV and eICU cohorts. The emphasis is on calibration and clinically actionable lead time rather than chasing raw AUROC, with an external-validation arm on a held-out hospital system.",
-    "contributors": [
-      "Annelene Schulze",
-      "Marcus Tan",
-      "Priya Nair"
-    ],
-    "venue": "ML4H 2026",
-    "deadline": "2026-06-25",
-    "open_to_collaborators": false,
-    "needed_skills": [],
-    "slack_channel": "project-sepsis",
-    "github_repo": "Amsel11/proj-demo-sepsis",
-    "last_updated": "2026-06-09T05:44:15+00:00",
-    "deadline_soon": true
-  },
-  {
     "name": "Open LLMs for Clinical Note Summarization",
     "status": "active",
     "description": "Fine-tuning and evaluating open-weight LLMs (Llama and Mistral) for faithful discharge-summary generation from inpatient progress notes. Includes a hallucination-detection harness that grounds every generated claim against the source chart, plus a blinded clinician evaluation of factuality and utility.",
@@ -56,8 +17,8 @@
       "human evaluation"
     ],
     "slack_channel": "project-llm-clinical",
-    "github_repo": "Amsel11/proj-demo-llm-clinical",
-    "last_updated": "2026-06-09T05:44:15+00:00",
+    "github_repo": "Amsel11/proj-demo-healthllm",
+    "last_updated": "2026-06-09T06:05:01+00:00",
     "deadline_soon": false
   }
 ]
