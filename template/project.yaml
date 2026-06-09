@@ -13,4 +13,4 @@ open_to_collaborators: false   # true if you want others to join
 needed_skills:                 # only shown when open_to_collaborators is true
   -
 slack_channel:                 # e.g. project-sepsis (optional)
-github_repo:                   # e.g. annelene/proj-something (auto-filled by the Action)
+github_repo:                   # e.g. Amsel11/proj-something (auto-filled by the Action)

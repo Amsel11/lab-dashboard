@@ -16,8 +16,8 @@
       "EHR data wrangling"
     ],
     "slack_channel": "project-ehr-fairness",
-    "github_repo": "annelene/proj-demo-ehr-fairness",
-    "last_updated": "2026-06-09T05:35:06+00:00",
+    "github_repo": "Amsel11/proj-demo-ehr-fairness",
+    "last_updated": "2026-06-09T05:44:15+00:00",
     "deadline_soon": false
   },
   {
@@ -34,8 +34,8 @@
     "open_to_collaborators": false,
     "needed_skills": [],
     "slack_channel": "project-sepsis",
-    "github_repo": "annelene/proj-demo-sepsis",
-    "last_updated": "2026-06-09T05:39:01+00:00",
+    "github_repo": "Amsel11/proj-demo-sepsis",
+    "last_updated": "2026-06-09T05:44:15+00:00",
     "deadline_soon": true
   },
   {
@@ -56,8 +56,8 @@
       "human evaluation"
     ],
     "slack_channel": "project-llm-clinical",
-    "github_repo": "annelene/proj-demo-llm-clinical",
-    "last_updated": "2026-06-09T05:35:06+00:00",
+    "github_repo": "Amsel11/proj-demo-llm-clinical",
+    "last_updated": "2026-06-09T05:44:15+00:00",
     "deadline_soon": false
   }
 ]

@@ -57,7 +57,7 @@ deadline:                    # YYYY-MM-DD (quote it, e.g. '2026-09-01')
 open_to_collaborators: false
 needed_skills:               # e.g. [NLP, clinical data, statistics]
 slack_channel:               # e.g. project-sepsis (optional)
-github_repo:                 # e.g. annelene/proj-demo-sepsis (auto-filled by the Action)
+github_repo:                 # e.g. Amsel11/proj-demo-sepsis (auto-filled by the Action)
 ```
 
 The aggregator also computes two fields automatically:
@@ -71,7 +71,7 @@ The aggregator also computes two fields automatically:
 ### 1. Create the dashboard repo
 
 Push this `lab-dashboard/` folder to GitHub as a repo named **`lab-dashboard`**
-(e.g. `github.com/annelene/lab-dashboard`). It can be public (required for free
+(e.g. `github.com/Amsel11/lab-dashboard`). It can be public (required for free
 GitHub Pages on personal accounts) or private (Pages works on private repos for
 Pro/Org plans).
 
@@ -98,7 +98,7 @@ In **every project repo** (not the dashboard repo):
 1. `lab-dashboard` → **Settings → Pages**.
 2. **Source:** *GitHub Actions* (not "Deploy from a branch").
 3. Push to `main` once — `pages.yml` runs and prints the published URL
-   (e.g. `https://annelene.github.io/lab-dashboard/`).
+   (e.g. `https://Amsel11.github.io/lab-dashboard/`).
 
 That URL is your live dashboard. Bookmark it.
 
@@ -114,7 +114,7 @@ That URL is your live dashboard. Bookmark it.
    ```
 2. Fill in `project.yaml`.
 3. In `.github/workflows/sync-dashboard.yml`, set the `repository:` line to your
-   dashboard repo (e.g. `annelene/lab-dashboard`).
+   dashboard repo (e.g. `Amsel11/lab-dashboard`).
 4. Add the `DASHBOARD_TOKEN` secret to the repo (see step 3 above).
 5. Commit and push. Within ~30 seconds the card appears on the dashboard.
 
@@ -134,7 +134,7 @@ pip install pyyaml
 
 python scripts/aggregate.py --local \
   --file ../proj-demo-sepsis/project.yaml \
-  --repo annelene/proj-demo-sepsis
+  --repo Amsel11/proj-demo-sepsis
 ```
 
 This upserts into `data/projects.json` exactly like the Action does.

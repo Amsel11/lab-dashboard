@@ -7,7 +7,7 @@ locally for testing:
 
     python scripts/aggregate.py --local \
         --file ../proj-demo-sepsis/project.yaml \
-        --repo annelene/proj-demo-sepsis
+        --repo Amsel11/proj-demo-sepsis
 
 Dependencies: Python standard library + pyyaml only.
 """
@@ -57,7 +57,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--local", action="store_true",
                         help="Local test mode (reads --file instead of $PROJECT_YAML)")
     parser.add_argument("--file", help="Path to a project.yaml (local mode)")
-    parser.add_argument("--repo", help="Full repo name, e.g. annelene/proj-demo-sepsis")
+    parser.add_argument("--repo", help="Full repo name, e.g. Amsel11/proj-demo-sepsis")
     parser.add_argument("--data", help="Path to projects.json (defaults to repo data/)")
     return parser.parse_args(argv)
 
