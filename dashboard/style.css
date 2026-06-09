@@ -8,7 +8,7 @@
   --text: #1f2328;
   --text-soft: #5b6470;
   --text-faint: #8a93a0;
-  --accent: #2f6fed;
+  --accent: #7c3aed;
   --shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.05);
   --shadow-hover: 0 2px 6px rgba(15, 23, 42, 0.10), 0 10px 24px rgba(15, 23, 42, 0.10);
   --radius: 14px;
@@ -31,7 +31,7 @@
   --text: #e7eaee;
   --text-soft: #aab2bd;
   --text-faint: #79828e;
-  --accent: #6f9bff;
+  --accent: #a78bfa;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 14px rgba(0, 0, 0, 0.35);
   --shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.5), 0 12px 28px rgba(0, 0, 0, 0.45);
 
@@ -49,7 +49,7 @@
 @media (prefers-color-scheme: dark) {
   :root[data-theme="auto"] {
     --bg: #14161a; --surface: #1d2025; --surface-2: #22262c; --border: #2f343c;
-    --text: #e7eaee; --text-soft: #aab2bd; --text-faint: #79828e; --accent: #6f9bff;
+    --text: #e7eaee; --text-soft: #aab2bd; --text-faint: #79828e; --accent: #a78bfa;
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 4px 14px rgba(0,0,0,.35);
     --shadow-hover: 0 2px 8px rgba(0,0,0,.5), 0 12px 28px rgba(0,0,0,.45);
     --pill-active-bg:#1c2c52; --pill-active-fg:#9cbcff;
@@ -100,6 +100,7 @@ body {
 }
 .theme-toggle:hover { background: var(--surface-2); }
 .theme-toggle:active { transform: scale(0.94); }
+.toolbar { display: flex; align-items: center; gap: 8px; }
 
 /* ---------- Layout ---------- */
 .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
@@ -119,8 +120,19 @@ body {
 
 .status-line { font-size: 13px; color: var(--text-faint); margin: 0 0 16px; min-height: 18px; }
 
-/* ---------- List of collapsible cards ---------- */
+/* ---------- Cards: list (default) or grid ---------- */
 .grid { display: flex; flex-direction: column; gap: 10px; }
+
+/* Grid view: multi-column, cards shown fully (non-collapsing). */
+.grid.view-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+.view-grid .chevron { display: none; }
+.view-grid .card-summary { cursor: default; }
+.view-grid .card-summary:hover { background: var(--surface-2); }
 
 .card {
   background: var(--surface); border: 1px solid var(--border);

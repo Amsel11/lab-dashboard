@@ -20,7 +20,7 @@
 
   var AVATAR_COLORS = ["#2f6fed", "#7c3aed", "#0f8a4f", "#b45309", "#be185d", "#0891b2", "#4f46e5", "#ca8a04"];
 
-  var state = { projects: [], activeFilter: "all" };
+  var state = { projects: [], activeFilter: "all", view: "list" };
 
   // ---- helpers -----------------------------------------------------------
   function el(tag, className, text) {
@@ -186,6 +186,7 @@
     renderFilters();
     var grid = document.getElementById("grid");
     var empty = document.getElementById("empty");
+    grid.className = "grid view-" + state.view;
     grid.innerHTML = "";
 
     var filter = FILTERS.filter(function (f) { return f.key === state.activeFilter; })[0] || FILTERS[0];
@@ -198,7 +199,37 @@
       });
 
     empty.hidden = visible.length !== 0;
-    visible.forEach(function (p) { grid.appendChild(buildCard(p)); });
+    visible.forEach(function (p) {
+      var card = buildCard(p);
+      if (state.view === "grid") {
+        // Grid cards are shown fully and don't collapse.
+        card.open = true;
+        var summary = card.querySelector(".card-summary");
+        if (summary) summary.addEventListener("click", function (e) { e.preventDefault(); });
+      }
+      grid.appendChild(card);
+    });
+  }
+
+  // ---- layout (list / grid) toggle --------------------------------------
+  function updateViewButton() {
+    var icon = document.getElementById("view-icon");
+    var btn = document.getElementById("view-toggle");
+    if (state.view === "grid") { icon.textContent = "▦"; btn.title = "Switch to list view"; }
+    else { icon.textContent = "☰"; btn.title = "Switch to grid view"; }
+  }
+
+  function initView() {
+    var stored = null;
+    try { stored = localStorage.getItem("dashboard-view"); } catch (e) {}
+    if (stored === "grid" || stored === "list") state.view = stored;
+    updateViewButton();
+    document.getElementById("view-toggle").addEventListener("click", function () {
+      state.view = state.view === "grid" ? "list" : "grid";
+      try { localStorage.setItem("dashboard-view", state.view); } catch (e) {}
+      updateViewButton();
+      render();
+    });
   }
 
   // ---- data loading ------------------------------------------------------
@@ -256,6 +287,7 @@
   // ---- boot --------------------------------------------------------------
   document.addEventListener("DOMContentLoaded", function () {
     initTheme();
+    initView();
     load();
   });
 })();
