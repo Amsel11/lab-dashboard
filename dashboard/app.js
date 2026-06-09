@@ -186,7 +186,12 @@
     var summary = el("summary", "card-summary");
     var main = el("span", "summary-main");
     main.appendChild(el("span", "card-name", p.name || "Untitled project"));
-    if (p.lead) main.appendChild(el("span", "lead-sub", "Lead · " + p.lead));
+    if (p.lead) {
+      var leadSub = el("span", "lead-sub");
+      leadSub.appendChild(el("span", "lead-tag", "Lead"));
+      leadSub.appendChild(document.createTextNode(" " + p.lead));
+      main.appendChild(leadSub);
+    }
     summary.appendChild(main);
 
     var sMeta = el("span", "summary-meta");
