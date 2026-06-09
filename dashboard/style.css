@@ -101,6 +101,14 @@ body {
 .theme-toggle:hover { background: var(--surface-2); }
 .theme-toggle:active { transform: scale(0.94); }
 .toolbar { display: flex; align-items: center; gap: 8px; }
+.view-toggle {
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  height: 40px; padding: 0 14px; border-radius: 0; cursor: pointer;
+  font-family: inherit; font-size: 13px; font-weight: 700; white-space: nowrap;
+  display: inline-flex; align-items: center;
+}
+.view-toggle:hover { background: var(--surface-2); }
+.view-toggle:active { transform: scale(0.97); }
 
 /* ---------- Layout ---------- */
 .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
@@ -123,16 +131,18 @@ body {
 /* ---------- Cards: list (default) or grid ---------- */
 .grid { display: flex; flex-direction: column; gap: 10px; }
 
-/* Grid view: multi-column, cards shown fully (non-collapsing). */
+/* Grid view: multi-column, cards shown fully (non-collapsing). Cards in a row
+   stretch to equal height, and footers align to the bottom. */
 .grid.view-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 16px;
-  align-items: start;
 }
+.view-grid .card { display: flex; flex-direction: column; }
+.view-grid .card-detail { flex: 1 1 auto; }
+.view-grid .card-foot { margin-top: auto; }
 .view-grid .chevron { display: none; }
 .view-grid .card-summary { cursor: default; }
-.view-grid .card-summary:hover { background: var(--surface-2); }
 
 .card {
   background: var(--surface); border: 1px solid var(--border);
@@ -211,6 +221,18 @@ body {
 
 .meta-row { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--text-soft); }
 .meta-row .label { color: var(--text-faint); margin-right: 4px; }
+
+.people { display: flex; flex-direction: column; gap: 8px; }
+.person-line { display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+.people-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+  color: var(--text-faint); min-width: 96px; padding-top: 4px; white-space: nowrap;
+}
+.chip.lead {
+  font-weight: 700;
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface-2));
+}
 
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip {

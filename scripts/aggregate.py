@@ -38,6 +38,7 @@ DEFAULTS: dict[str, object] = {
     "name": "",
     "status": "active",
     "description": "",
+    "lead": "",
     "contributors": [],
     "venue": "",
     "deadline": "",
@@ -125,6 +126,7 @@ def normalize(raw: dict, repo: str, now: datetime) -> dict:
     record["status"] = str(record["status"]).strip().lower() or "active"
     if record["status"] not in VALID_STATUSES:
         log(f"Unknown status {record['status']!r}; leaving as-is.")
+    record["lead"] = str(record.get("lead", "")).strip()
     record["contributors"] = [str(c).strip() for c in (record["contributors"] or []) if str(c).strip()]
     record["needed_skills"] = [str(s).strip() for s in (record["needed_skills"] or []) if str(s).strip()]
     record["open_to_collaborators"] = bool(record["open_to_collaborators"])

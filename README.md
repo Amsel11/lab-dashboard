@@ -51,7 +51,8 @@ reads from them.
 name:                        # required, human readable
 status: active               # active | writing | submitted | published | paused
 description:
-contributors:
+lead:                        # the project lead (one name)
+contributors:                # collaborators
   -
 venue:                       # e.g. NeurIPS 2026, Nature Medicine
 deadline:                    # YYYY-MM-DD (quote it, e.g. '2026-09-01')

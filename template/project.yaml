@@ -5,7 +5,8 @@ name:                          # required, human readable, e.g. "Early Sepsis Pr
 status: active                 # active | writing | submitted | published | paused
 description: >-                # a sentence or two; supports multi-line with this >- block style
 
-contributors:                  # list of names
+lead:                          # the project lead (one name)
+contributors:                  # collaborators (list of names)
   -
 venue:                         # e.g. NeurIPS 2026, Nature Medicine, ML4H 2026
 deadline:                      # YYYY-MM-DD (quote it: '2026-09-01')

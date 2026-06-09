@@ -119,17 +119,32 @@
     if (p.description) detail.appendChild(el("p", "card-desc", p.description));
 
     // contributors
-    if (Array.isArray(p.contributors) && p.contributors.length) {
-      var chips = el("div", "chips");
-      p.contributors.forEach(function (name) {
-        var chip = el("span", "chip");
-        var av = el("span", "avatar", initials(name));
-        av.style.background = colorFor(name);
-        chip.appendChild(av);
-        chip.appendChild(document.createTextNode(name));
-        chips.appendChild(chip);
-      });
-      detail.appendChild(chips);
+    function personChip(name, isLead) {
+      var chip = el("span", "chip" + (isLead ? " lead" : ""));
+      var av = el("span", "avatar", initials(name));
+      av.style.background = colorFor(name);
+      chip.appendChild(av);
+      chip.appendChild(document.createTextNode(name));
+      return chip;
+    }
+
+    if (p.lead || (Array.isArray(p.contributors) && p.contributors.length)) {
+      var people = el("div", "people");
+      if (p.lead) {
+        var leadLine = el("div", "person-line");
+        leadLine.appendChild(el("span", "people-label", "👑 Lead"));
+        leadLine.appendChild(personChip(p.lead, true));
+        people.appendChild(leadLine);
+      }
+      if (Array.isArray(p.contributors) && p.contributors.length) {
+        var collabLine = el("div", "person-line");
+        collabLine.appendChild(el("span", "people-label", "Collaborators"));
+        var chips = el("div", "chips");
+        p.contributors.forEach(function (name) { chips.appendChild(personChip(name, false)); });
+        collabLine.appendChild(chips);
+        people.appendChild(collabLine);
+      }
+      detail.appendChild(people);
     }
 
     // venue / deadline / grant / collaboration — show only what's set
@@ -213,10 +228,11 @@
 
   // ---- layout (list / grid) toggle --------------------------------------
   function updateViewButton() {
-    var icon = document.getElementById("view-icon");
+    // The button shows the view it will switch TO when clicked.
+    var label = document.getElementById("view-label");
     var btn = document.getElementById("view-toggle");
-    if (state.view === "grid") { icon.textContent = "▦"; btn.title = "Switch to list view"; }
-    else { icon.textContent = "☰"; btn.title = "Switch to grid view"; }
+    if (state.view === "grid") { label.textContent = "☰ List view"; btn.title = "Switch to list view"; }
+    else { label.textContent = "▦ Grid view"; btn.title = "Switch to grid view"; }
   }
 
   function initView() {

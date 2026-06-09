@@ -3,9 +3,13 @@
     "name": "Auditing Algorithmic Fairness in EHR Mortality Models",
     "status": "writing",
     "description": "A systematic audit of subgroup calibration and error-rate disparities across race, sex, and insurance status in widely deployed EHR mortality risk scores. We propose a reweighting-based mitigation that closes the largest disparities while preserving overall discrimination, evaluated on MIMIC-IV and a community hospital cohort.",
+    "lead": "Annelene Schulze",
     "contributors": [
-      "Annelene Schulze",
-      "EKO"
+      "Mickey Mouse",
+      "Minnie Mouse",
+      "Donald Duck",
+      "Goofy",
+      "Daisy Duck"
     ],
     "venue": "FAccT 2026",
     "deadline": "2026-09-01",
@@ -21,15 +25,15 @@
     "slack_channel": "project-ehr-fairness",
     "github_repo": "Amsel11/proj-demo-ehr-fairness",
     "collab_state": "open",
-    "last_updated": "2026-06-09T18:52:46+00:00",
+    "last_updated": "2026-06-09T19:47:43+00:00",
     "deadline_soon": false
   },
   {
     "name": "Cross-Paper Synthesis & Ideation Agent",
     "status": "active",
     "description": "An LLM agent that ingests a user-defined cohort of papers and answers targeted questions across the whole set: it summarizes each paper, maps how they connect, relate, and differ, and surfaces grounded, citation-backed proposals for new research directions that emerge from the cohort as a whole.",
+    "lead": "Annelene Schulze",
     "contributors": [
-      "Annelene Schulze",
       "Jack Markert"
     ],
     "venue": "",
@@ -42,16 +46,16 @@
     "slack_channel": "",
     "github_repo": "Amsel11/proj-paper-agent",
     "collab_state": "closed",
-    "last_updated": "2026-06-09T18:52:46+00:00",
+    "last_updated": "2026-06-09T19:47:43+00:00",
     "deadline_soon": false
   },
   {
     "name": "Early Sepsis Prediction from ICU Time-Series",
     "status": "active",
     "description": "A recurrent + attention model that forecasts sepsis onset up to 6 hours ahead from streaming vitals and labs in the MIMIC-IV and eICU cohorts. The emphasis is on calibration and clinically actionable lead time rather than chasing raw AUROC, with an external-validation arm on a held-out hospital system.",
+    "lead": "EKO",
     "contributors": [
-      "Annelene Schulze",
-      "EKO"
+      "Annelene Schulze"
     ],
     "venue": "ML4H 2026",
     "deadline": "2026-06-25",
@@ -63,15 +67,15 @@
     "slack_channel": "project-sepsis",
     "github_repo": "Amsel11/proj-demo-sepsis",
     "collab_state": "closed",
-    "last_updated": "2026-06-09T18:52:46+00:00",
+    "last_updated": "2026-06-09T19:47:43+00:00",
     "deadline_soon": true
   },
   {
     "name": "Open LLMs for Clinical Note Summarization",
     "status": "active",
     "description": "Fine-tuning and evaluating open-weight LLMs (Llama and Mistral) for faithful discharge-summary generation from inpatient progress notes. Includes a hallucination-detection harness that grounds every generated claim against the source chart, plus a blinded clinician evaluation of factuality and utility.",
+    "lead": "Annelene Schulze",
     "contributors": [
-      "Annelene Schulze",
       "EKO"
     ],
     "venue": "ACL 2026",
@@ -88,7 +92,7 @@
     "slack_channel": "project-llm-clinical",
     "github_repo": "Amsel11/proj-demo-healthllm",
     "collab_state": "open",
-    "last_updated": "2026-06-09T18:52:46+00:00",
+    "last_updated": "2026-06-09T19:47:43+00:00",
     "deadline_soon": false
   }
 ]
