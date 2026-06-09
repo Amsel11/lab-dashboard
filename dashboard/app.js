@@ -241,7 +241,27 @@
 
     empty.hidden = visible.length !== 0;
     var build = state.view === "grid" ? buildGridCard : buildListCard;
-    visible.forEach(function (p) { grid.appendChild(build(p)); });
+    visible.forEach(function (p) {
+      var card = build(p);
+      grid.appendChild(card);
+      if (state.view === "grid") maybeClampGrid(card);
+    });
+  }
+
+  // Grid cards have a fixed height; if content overflows, add a "Show more".
+  function maybeClampGrid(card) {
+    if (card.scrollHeight - card.clientHeight > 4) {
+      card.classList.add("clamped");
+      var btn = el("button", "more-btn", "Show more");
+      btn.type = "button";
+      btn.addEventListener("click", function () {
+        var expand = !card.classList.contains("expanded");
+        card.classList.toggle("expanded", expand);
+        card.classList.toggle("clamped", !expand);
+        btn.textContent = expand ? "Show less" : "Show more";
+      });
+      card.appendChild(btn);
+    }
   }
 
   // ---- layout (grid / list) toggle --------------------------------------

@@ -141,14 +141,34 @@ body {
   border-radius: 0; box-shadow: var(--shadow);
 }
 
-/* Grid: full card, everything visible */
+/* Grid: fixed-height cards (stable, aligned). Overflow -> "Show more". */
 .grid-card {
   padding: 20px; display: flex; flex-direction: column; gap: 14px;
-  transition: box-shadow .18s, transform .18s, border-color .18s;
+  position: relative; overflow: hidden;
+  min-height: var(--card-h, 340px); max-height: var(--card-h, 340px);
+  transition: box-shadow .18s, border-color .18s;
 }
 .grid-card:hover {
-  box-shadow: var(--shadow-hover); transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
   border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+}
+.grid-card.expanded { max-height: none; overflow: visible; }
+
+/* Fade + button shown only when a card is clamped. */
+.grid-card.clamped::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 64px;
+  background: linear-gradient(to bottom, transparent, var(--surface));
+  pointer-events: none; z-index: 1;
+}
+.more-btn {
+  font-family: inherit; cursor: pointer; color: var(--accent);
+  font-size: 12px; font-weight: 700; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 0; padding: 3px 12px;
+  align-self: center; margin-top: 2px;
+}
+.more-btn:hover { background: var(--surface-2); }
+.grid-card.clamped .more-btn {
+  position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); z-index: 2;
 }
 
 /* List: collapsible row */
