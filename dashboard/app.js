@@ -85,24 +85,26 @@
   }
 
   function buildCard(p) {
-    var card = el("article", "card");
-
-    // head: name + status pill
-    var head = el("div", "card-head");
-    head.appendChild(el("h2", "card-name", p.name || "Untitled project"));
+    var card = el("details", "card");
     var status = (p.status || "active").toLowerCase();
-    head.appendChild(el("span", "pill " + status, status));
-    card.appendChild(head);
 
-    // deadline-soon banner
-    if (p.deadline_soon) {
-      var banner = el("div", "banner");
-      banner.appendChild(document.createTextNode("⏰ Deadline soon"));
-      if (p.deadline) banner.appendChild(document.createTextNode(" · " + formatDate(p.deadline)));
-      card.appendChild(banner);
-    }
+    // Collapsed row: name on the left; soon-chip + status + chevron on the right.
+    var summary = el("summary", "card-summary");
+    var main = el("span", "summary-main");
+    main.appendChild(el("span", "card-name", p.name || "Untitled project"));
+    summary.appendChild(main);
 
-    if (p.description) card.appendChild(el("p", "card-desc", p.description));
+    var sMeta = el("span", "summary-meta");
+    if (p.deadline_soon) sMeta.appendChild(el("span", "soon-chip", "⏰ soon"));
+    sMeta.appendChild(el("span", "pill " + status, status));
+    sMeta.appendChild(el("span", "chevron", "▸"));
+    summary.appendChild(sMeta);
+    card.appendChild(summary);
+
+    // Expanded body holds everything else.
+    var detail = el("div", "card-detail");
+
+    if (p.description) detail.appendChild(el("p", "card-desc", p.description));
 
     // contributors
     if (Array.isArray(p.contributors) && p.contributors.length) {
@@ -115,7 +117,7 @@
         chip.appendChild(document.createTextNode(name));
         chips.appendChild(chip);
       });
-      card.appendChild(chips);
+      detail.appendChild(chips);
     }
 
     // venue / deadline / grant / collaboration — show only what's set
@@ -133,7 +135,7 @@
         span.appendChild(document.createTextNode(item[1]));
         meta.appendChild(span);
       });
-      card.appendChild(meta);
+      detail.appendChild(meta);
     }
 
     // open to collaborators
@@ -145,7 +147,7 @@
         p.needed_skills.forEach(function (skill) { sc.appendChild(el("span", "skill-chip", skill)); });
         box.appendChild(sc);
       }
-      card.appendChild(box);
+      detail.appendChild(box);
     }
 
     // footer: repo link + last updated
@@ -161,8 +163,9 @@
       foot.appendChild(el("span"));
     }
     if (p.last_updated) foot.appendChild(el("span", "updated", "updated " + timeAgo(p.last_updated)));
-    card.appendChild(foot);
+    detail.appendChild(foot);
 
+    card.appendChild(detail);
     return card;
   }
 
