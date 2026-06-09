@@ -1,0 +1,16 @@
+# Copy this file to the root of your project repo and fill it in.
+# Every push to main that changes this file updates the lab dashboard.
+
+name:                          # required, human readable, e.g. "Early Sepsis Prediction"
+status: active                 # active | writing | submitted | published | paused
+description: >-                # a sentence or two; supports multi-line with this >- block style
+
+contributors:                  # list of names
+  -
+venue:                         # e.g. NeurIPS 2026, Nature Medicine, ML4H 2026
+deadline:                      # YYYY-MM-DD (quote it: '2026-09-01')
+open_to_collaborators: false   # true if you want others to join
+needed_skills:                 # only shown when open_to_collaborators is true
+  -
+slack_channel:                 # e.g. project-sepsis (optional)
+github_repo:                   # e.g. annelene/proj-something (auto-filled by the Action)

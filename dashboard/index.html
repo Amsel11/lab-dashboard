@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab Project Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🧪</text></svg>" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">🧪</span>
+        <div>
+          <h1>Lab Project Dashboard</h1>
+          <p class="subtitle">Healthcare AI Research · live from each project's <code>project.yaml</code></p>
+        </div>
+      </div>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">
+        <span class="theme-icon">🌗</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <nav id="filters" class="filters" aria-label="Filter projects"></nav>
+
+    <p id="status-line" class="status-line" role="status"></p>
+
+    <section id="grid" class="grid" aria-live="polite"></section>
+
+    <p id="empty" class="empty" hidden>No projects match this filter.</p>
+  </main>
+
+  <footer class="footer">
+    <span id="footer-meta"></span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

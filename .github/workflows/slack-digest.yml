@@ -1,0 +1,27 @@
+name: Weekly Slack digest
+
+# DISABLED BY DEFAULT. The job below has `if: false`, so it never runs.
+# To enable: (1) add a SLACK_WEBHOOK_URL secret to this repo, then
+# (2) delete the `if: false` line on the job.
+on:
+  schedule:
+    - cron: '0 9 * * 1'   # Mondays 09:00 UTC
+  workflow_dispatch: {}
+
+jobs:
+  digest:
+    if: false   # <-- remove this line to enable the weekly digest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Post digest to Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: python scripts/slack_digest.py
