@@ -131,7 +131,7 @@ body {
 
 /* ---------- Card containers (two layouts) ---------- */
 .grid.view-grid {
-  display: grid; gap: 18px; align-items: start;
+  display: grid; gap: 18px; align-items: stretch;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
 }
 .grid.view-list { display: flex; flex-direction: column; gap: 10px; }
