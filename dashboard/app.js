@@ -1,12 +1,8 @@
-/* Lab Project Dashboard — vanilla JS, no dependencies, works offline. */
+/* OLAB Project Dashboard — vanilla JS, no dependencies, works offline. */
 (function () {
   "use strict";
 
-  // Try these paths in order so the page works whether it's served from the
-  // site root (GitHub Pages build), from the dashboard/ folder with a sibling
-  // data/ dir, or with projects.json copied alongside.
   var DATA_CANDIDATES = ["data/projects.json", "../data/projects.json", "projects.json"];
-
   var STATUS_ORDER = ["active", "writing", "submitted", "published", "paused"];
 
   var FILTERS = [
@@ -15,12 +11,12 @@
     { key: "writing", label: "Writing", test: function (p) { return p.status === "writing"; } },
     { key: "submitted", label: "Submitted", test: function (p) { return p.status === "submitted"; } },
     { key: "published", label: "Published", test: function (p) { return p.status === "published"; } },
-    { key: "open", label: "Open to collaborators", test: function (p) { return !!p.open_to_collaborators; } }
+    { key: "open", label: "Open to collaborators", test: function (p) { return (p.collab_state || (p.open_to_collaborators ? "open" : "closed")) !== "closed"; } }
   ];
 
-  var AVATAR_COLORS = ["#2f6fed", "#7c3aed", "#0f8a4f", "#b45309", "#be185d", "#0891b2", "#4f46e5", "#ca8a04"];
+  var AVATAR_COLORS = ["#7c3aed", "#2563eb", "#0f8a4f", "#b45309", "#be185d", "#0891b2", "#4f46e5", "#ca8a04"];
 
-  var state = { projects: [], activeFilter: "all", view: "list" };
+  var state = { projects: [], activeFilter: "all", view: "grid" };
 
   // ---- helpers -----------------------------------------------------------
   function el(tag, className, text) {
@@ -64,75 +60,41 @@
     return formatDate(String(iso).slice(0, 10));
   }
 
-  // ---- rendering ---------------------------------------------------------
-  function renderFilters() {
-    var nav = document.getElementById("filters");
-    nav.innerHTML = "";
-    FILTERS.forEach(function (f) {
-      var count = state.projects.filter(f.test).length;
-      if (f.key !== "all" && f.key !== "open" && count === 0) return; // hide empty status filters
-      var btn = el("button", "filter-btn");
-      btn.type = "button";
-      btn.setAttribute("aria-pressed", String(state.activeFilter === f.key));
-      btn.appendChild(document.createTextNode(f.label));
-      btn.appendChild(el("span", "count", String(count)));
-      btn.addEventListener("click", function () {
-        state.activeFilter = f.key;
-        render();
-      });
-      nav.appendChild(btn);
-    });
+  function collabState(p) {
+    return p.collab_state || (p.open_to_collaborators ? "open" : "closed");
   }
 
-  function buildCard(p) {
-    var card = el("details", "card");
-    var status = (p.status || "active").toLowerCase();
-
-    // Collapsed row: name on the left; soon-chip + status + chevron on the right.
-    var summary = el("summary", "card-summary");
-    var main = el("span", "summary-main");
-    main.appendChild(el("span", "card-name", p.name || "Untitled project"));
-    summary.appendChild(main);
-
-    // Collaboration status — always shown in the header.
-    var collab = p.collab_state || (p.open_to_collaborators ? "open" : "closed");
-    var COLLAB_LABEL = { open: "🤝 open", urgent: "🚨 help wanted", closed: "🔒 closed" };
-    var COLLAB_TITLE = {
+  function collabChip(p) {
+    var c = collabState(p);
+    var LABEL = { open: "🤝 open", urgent: "🚨 help wanted", closed: "🔒 closed" };
+    var TITLE = {
       open: "Open to collaborators",
       urgent: "Urgently seeking collaborators",
       closed: "Not seeking collaborators"
     };
+    var chip = el("span", "collab-chip " + c, LABEL[c] || c);
+    chip.title = TITLE[c] || "";
+    return chip;
+  }
 
-    var sMeta = el("span", "summary-meta");
-    var collabChip = el("span", "collab-chip " + collab, COLLAB_LABEL[collab] || collab);
-    collabChip.title = COLLAB_TITLE[collab] || "";
-    sMeta.appendChild(collabChip);
-    if (p.deadline_soon) sMeta.appendChild(el("span", "soon-chip", "⏰ soon"));
-    sMeta.appendChild(el("span", "pill " + status, status));
-    sMeta.appendChild(el("span", "chevron", "▸"));
-    summary.appendChild(sMeta);
-    card.appendChild(summary);
+  function personChip(name, isLead) {
+    var chip = el("span", "chip" + (isLead ? " lead" : ""));
+    var av = el("span", "avatar", initials(name));
+    av.style.background = colorFor(name);
+    chip.appendChild(av);
+    chip.appendChild(document.createTextNode(name));
+    return chip;
+  }
 
-    // Expanded body holds everything else.
-    var detail = el("div", "card-detail");
-
-    if (p.description) detail.appendChild(el("p", "card-desc", p.description));
-
-    // contributors
-    function personChip(name, isLead) {
-      var chip = el("span", "chip" + (isLead ? " lead" : ""));
-      var av = el("span", "avatar", initials(name));
-      av.style.background = colorFor(name);
-      chip.appendChild(av);
-      chip.appendChild(document.createTextNode(name));
-      return chip;
-    }
+  // ---- shared card body (description, people, meta, open box, footer) -----
+  function appendBody(p, container) {
+    if (p.description) container.appendChild(el("p", "card-desc", p.description));
 
     if (p.lead || (Array.isArray(p.contributors) && p.contributors.length)) {
       var people = el("div", "people");
       if (p.lead) {
         var leadLine = el("div", "person-line");
-        leadLine.appendChild(el("span", "people-label", "👑 Lead"));
+        leadLine.appendChild(el("span", "people-label", "Lead"));
         leadLine.appendChild(personChip(p.lead, true));
         people.appendChild(leadLine);
       }
@@ -144,10 +106,9 @@
         collabLine.appendChild(chips);
         people.appendChild(collabLine);
       }
-      detail.appendChild(people);
+      container.appendChild(people);
     }
 
-    // venue / deadline / grant / collaboration — show only what's set
     var metaItems = [
       ["Venue", p.venue],
       ["Deadline", p.deadline ? formatDate(p.deadline) : ""],
@@ -162,10 +123,10 @@
         span.appendChild(document.createTextNode(item[1]));
         meta.appendChild(span);
       });
-      detail.appendChild(meta);
+      container.appendChild(meta);
     }
 
-    // collaboration box (shown when open or urgent)
+    var collab = collabState(p);
     if (collab !== "closed") {
       var box = el("div", "open-box" + (collab === "urgent" ? " urgent" : ""));
       box.appendChild(el("div", "open-title",
@@ -175,10 +136,9 @@
         p.needed_skills.forEach(function (skill) { sc.appendChild(el("span", "skill-chip", skill)); });
         box.appendChild(sc);
       }
-      detail.appendChild(box);
+      container.appendChild(box);
     }
 
-    // footer: repo link + last updated
     var foot = el("div", "card-foot");
     if (p.github_repo) {
       var link = el("a", "repo-link");
@@ -191,10 +151,76 @@
       foot.appendChild(el("span"));
     }
     if (p.last_updated) foot.appendChild(el("span", "updated", "updated " + timeAgo(p.last_updated)));
-    detail.appendChild(foot);
+    container.appendChild(foot);
+  }
 
+  // ---- grid view: the original full card ---------------------------------
+  function buildGridCard(p) {
+    var card = el("article", "card grid-card");
+    var status = (p.status || "active").toLowerCase();
+
+    var head = el("div", "card-head");
+    head.appendChild(el("h2", "card-name", p.name || "Untitled project"));
+    var hMeta = el("div", "head-meta");
+    hMeta.appendChild(collabChip(p));
+    hMeta.appendChild(el("span", "pill " + status, status));
+    head.appendChild(hMeta);
+    card.appendChild(head);
+
+    if (p.deadline_soon) {
+      var banner = el("div", "banner");
+      banner.appendChild(document.createTextNode("⏰ Deadline soon"));
+      if (p.deadline) banner.appendChild(document.createTextNode(" · " + formatDate(p.deadline)));
+      card.appendChild(banner);
+    }
+
+    appendBody(p, card);
+    return card;
+  }
+
+  // ---- list view: collapsible row (lead shown in the collapsed header) ----
+  function buildListCard(p) {
+    var card = el("details", "card list-card");
+    var status = (p.status || "active").toLowerCase();
+
+    var summary = el("summary", "card-summary");
+    var main = el("span", "summary-main");
+    main.appendChild(el("span", "card-name", p.name || "Untitled project"));
+    if (p.lead) main.appendChild(el("span", "lead-sub", "Lead · " + p.lead));
+    summary.appendChild(main);
+
+    var sMeta = el("span", "summary-meta");
+    sMeta.appendChild(collabChip(p));
+    if (p.deadline_soon) sMeta.appendChild(el("span", "soon-chip", "⏰ soon"));
+    sMeta.appendChild(el("span", "pill " + status, status));
+    sMeta.appendChild(el("span", "chevron", "▸"));
+    summary.appendChild(sMeta);
+    card.appendChild(summary);
+
+    var detail = el("div", "card-detail");
+    appendBody(p, detail);
     card.appendChild(detail);
     return card;
+  }
+
+  // ---- rendering ---------------------------------------------------------
+  function renderFilters() {
+    var nav = document.getElementById("filters");
+    nav.innerHTML = "";
+    FILTERS.forEach(function (f) {
+      var count = state.projects.filter(f.test).length;
+      if (f.key !== "all" && f.key !== "open" && count === 0) return;
+      var btn = el("button", "filter-btn");
+      btn.type = "button";
+      btn.setAttribute("aria-pressed", String(state.activeFilter === f.key));
+      btn.appendChild(document.createTextNode(f.label));
+      btn.appendChild(el("span", "count", String(count)));
+      btn.addEventListener("click", function () {
+        state.activeFilter = f.key;
+        render();
+      });
+      nav.appendChild(btn);
+    });
   }
 
   function render() {
@@ -214,21 +240,13 @@
       });
 
     empty.hidden = visible.length !== 0;
-    visible.forEach(function (p) {
-      var card = buildCard(p);
-      if (state.view === "grid") {
-        // Grid cards are shown fully and don't collapse.
-        card.open = true;
-        var summary = card.querySelector(".card-summary");
-        if (summary) summary.addEventListener("click", function (e) { e.preventDefault(); });
-      }
-      grid.appendChild(card);
-    });
+    var build = state.view === "grid" ? buildGridCard : buildListCard;
+    visible.forEach(function (p) { grid.appendChild(build(p)); });
   }
 
-  // ---- layout (list / grid) toggle --------------------------------------
+  // ---- layout (grid / list) toggle --------------------------------------
   function updateViewButton() {
-    // The button shows the view it will switch TO when clicked.
+    // The button shows the view it switches TO when clicked.
     var label = document.getElementById("view-label");
     var btn = document.getElementById("view-toggle");
     if (state.view === "grid") { label.textContent = "☰ List view"; btn.title = "Switch to list view"; }
@@ -253,7 +271,7 @@
     var i = 0;
     function attempt() {
       if (i >= paths.length) return Promise.reject(new Error("projects.json not found"));
-      var url = paths[i++] + "?t=" + Date.now(); // cache-bust so refresh shows updates
+      var url = paths[i++] + "?t=" + Date.now();
       return fetch(url, { cache: "no-store" }).then(function (res) {
         if (!res.ok) throw new Error(res.status + " for " + url);
         return res.json();
@@ -276,7 +294,7 @@
       statusLine.textContent = "Could not load projects.json — " + err.message;
       document.getElementById("empty").hidden = false;
       document.getElementById("empty").textContent =
-        "No data yet. Push a project.yaml or run the aggregator to populate the dashboard.";
+        "No data yet. Add a project.yaml or run the aggregator to populate the dashboard.";
     });
   }
 
@@ -289,7 +307,6 @@
 
     document.getElementById("theme-toggle").addEventListener("click", function () {
       var current = root.getAttribute("data-theme");
-      // resolve "auto" to whatever the OS currently shows, then flip
       if (current === "auto") {
         var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
         current = prefersDark ? "dark" : "light";
