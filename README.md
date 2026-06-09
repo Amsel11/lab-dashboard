@@ -58,6 +58,7 @@ deadline:                    # YYYY-MM-DD (quote it, e.g. '2026-09-01')
 grant:                       # funding source / grant (optional)
 collaboration:               # collaboration or consortium (optional)
 open_to_collaborators: false
+help:                        # optional header chip override: open | closed | urgent
 needed_skills:               # e.g. [NLP, clinical data, statistics]
 slack_channel:               # e.g. project-sepsis (optional)
 github_repo:                 # filled in automatically from the repo it's pulled from

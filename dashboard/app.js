@@ -94,7 +94,19 @@
     main.appendChild(el("span", "card-name", p.name || "Untitled project"));
     summary.appendChild(main);
 
+    // Collaboration status — always shown in the header.
+    var collab = p.collab_state || (p.open_to_collaborators ? "open" : "closed");
+    var COLLAB_LABEL = { open: "🤝 open", urgent: "🚨 help wanted", closed: "🔒 closed" };
+    var COLLAB_TITLE = {
+      open: "Open to collaborators",
+      urgent: "Urgently seeking collaborators",
+      closed: "Not seeking collaborators"
+    };
+
     var sMeta = el("span", "summary-meta");
+    var collabChip = el("span", "collab-chip " + collab, COLLAB_LABEL[collab] || collab);
+    collabChip.title = COLLAB_TITLE[collab] || "";
+    sMeta.appendChild(collabChip);
     if (p.deadline_soon) sMeta.appendChild(el("span", "soon-chip", "⏰ soon"));
     sMeta.appendChild(el("span", "pill " + status, status));
     sMeta.appendChild(el("span", "chevron", "▸"));
@@ -138,10 +150,11 @@
       detail.appendChild(meta);
     }
 
-    // open to collaborators
-    if (p.open_to_collaborators) {
-      var box = el("div", "open-box");
-      box.appendChild(el("div", "open-title", "🤝 Open to collaborators"));
+    // collaboration box (shown when open or urgent)
+    if (collab !== "closed") {
+      var box = el("div", "open-box" + (collab === "urgent" ? " urgent" : ""));
+      box.appendChild(el("div", "open-title",
+        collab === "urgent" ? "🚨 Urgently seeking collaborators" : "🤝 Open to collaborators"));
       if (Array.isArray(p.needed_skills) && p.needed_skills.length) {
         var sc = el("div", "skill-chips");
         p.needed_skills.forEach(function (skill) { sc.appendChild(el("span", "skill-chip", skill)); });

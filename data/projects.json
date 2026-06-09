@@ -12,6 +12,7 @@
     "grant": "",
     "collaboration": "",
     "open_to_collaborators": true,
+    "help": "",
     "needed_skills": [
       "fairness / bias auditing",
       "biostatistics",
@@ -19,7 +20,8 @@
     ],
     "slack_channel": "project-ehr-fairness",
     "github_repo": "Amsel11/proj-demo-ehr-fairness",
-    "last_updated": "2026-06-09T15:57:07+00:00",
+    "collab_state": "open",
+    "last_updated": "2026-06-09T18:52:46+00:00",
     "deadline_soon": false
   },
   {
@@ -35,10 +37,12 @@
     "grant": "",
     "collaboration": "",
     "open_to_collaborators": false,
+    "help": "",
     "needed_skills": [],
     "slack_channel": "",
     "github_repo": "Amsel11/proj-paper-agent",
-    "last_updated": "2026-06-09T15:57:07+00:00",
+    "collab_state": "closed",
+    "last_updated": "2026-06-09T18:52:46+00:00",
     "deadline_soon": false
   },
   {
@@ -54,10 +58,12 @@
     "grant": "",
     "collaboration": "",
     "open_to_collaborators": false,
+    "help": "",
     "needed_skills": [],
     "slack_channel": "project-sepsis",
     "github_repo": "Amsel11/proj-demo-sepsis",
-    "last_updated": "2026-06-09T15:57:07+00:00",
+    "collab_state": "closed",
+    "last_updated": "2026-06-09T18:52:46+00:00",
     "deadline_soon": true
   },
   {
@@ -73,6 +79,7 @@
     "grant": "",
     "collaboration": "",
     "open_to_collaborators": true,
+    "help": "",
     "needed_skills": [
       "NLP / LLM fine-tuning",
       "clinical data",
@@ -80,7 +87,8 @@
     ],
     "slack_channel": "project-llm-clinical",
     "github_repo": "Amsel11/proj-demo-healthllm",
-    "last_updated": "2026-06-09T15:57:07+00:00",
+    "collab_state": "open",
+    "last_updated": "2026-06-09T18:52:46+00:00",
     "deadline_soon": false
   }
 ]

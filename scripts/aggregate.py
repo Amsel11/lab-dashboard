@@ -44,6 +44,7 @@ DEFAULTS: dict[str, object] = {
     "grant": "",
     "collaboration": "",
     "open_to_collaborators": False,
+    "help": "",            # optional override: open | closed | urgent
     "needed_skills": [],
     "slack_channel": "",
     "github_repo": "",
@@ -128,6 +129,14 @@ def normalize(raw: dict, repo: str, now: datetime) -> dict:
     record["needed_skills"] = [str(s).strip() for s in (record["needed_skills"] or []) if str(s).strip()]
     record["open_to_collaborators"] = bool(record["open_to_collaborators"])
     record["deadline"] = deadline_iso(record["deadline"])
+
+    # Collaboration state shown (always) in the card header. An explicit `help:`
+    # value wins; otherwise derive from the open_to_collaborators boolean.
+    record["help"] = str(record.get("help", "")).strip().lower()
+    if record["help"] in ("urgent", "open", "closed"):
+        record["collab_state"] = record["help"]
+    else:
+        record["collab_state"] = "open" if record["open_to_collaborators"] else "closed"
 
     # Computed / authoritative fields.
     record["github_repo"] = repo
