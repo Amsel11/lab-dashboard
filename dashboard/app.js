@@ -241,27 +241,19 @@
 
     empty.hidden = visible.length !== 0;
     var build = state.view === "grid" ? buildGridCard : buildListCard;
-    visible.forEach(function (p) {
-      var card = build(p);
-      grid.appendChild(card);
-      if (state.view === "grid") maybeClampGrid(card);
-    });
+    visible.forEach(function (p) { grid.appendChild(build(p)); });
+    if (state.view === "grid") equalizeGrid();
   }
 
-  // Grid cards have a fixed height; if content overflows, add a "Show more".
-  function maybeClampGrid(card) {
-    if (card.scrollHeight - card.clientHeight > 4) {
-      card.classList.add("clamped");
-      var btn = el("button", "more-btn", "Show more");
-      btn.type = "button";
-      btn.addEventListener("click", function () {
-        var expand = !card.classList.contains("expanded");
-        card.classList.toggle("expanded", expand);
-        card.classList.toggle("clamped", !expand);
-        btn.textContent = expand ? "Show less" : "Show more";
-      });
-      card.appendChild(btn);
-    }
+  // Make every grid card as tall as the tallest one, so all are equal and
+  // every card shows its full content (no clipping).
+  function equalizeGrid() {
+    var cards = document.querySelectorAll(".grid-card");
+    if (!cards.length) return;
+    var max = 0;
+    cards.forEach(function (c) { c.style.minHeight = ""; });
+    cards.forEach(function (c) { if (c.offsetHeight > max) max = c.offsetHeight; });
+    cards.forEach(function (c) { c.style.minHeight = max + "px"; });
   }
 
   // ---- layout (grid / list) toggle --------------------------------------
@@ -283,6 +275,12 @@
       try { localStorage.setItem("dashboard-view", state.view); } catch (e) {}
       updateViewButton();
       render();
+    });
+
+    var resizeTimer;
+    window.addEventListener("resize", function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () { if (state.view === "grid") equalizeGrid(); }, 150);
     });
   }
 
