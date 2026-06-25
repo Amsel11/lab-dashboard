@@ -25,7 +25,7 @@
     "slack_channel": "project-ehr-fairness",
     "github_repo": "Amsel11/proj-demo-ehr-fairness",
     "collab_state": "open",
-    "last_updated": "2026-06-25T20:55:37+00:00",
+    "last_updated": "2026-06-25T22:21:30+00:00",
     "deadline_soon": false
   },
   {
@@ -46,7 +46,7 @@
     "slack_channel": "",
     "github_repo": "Amsel11/proj-paper-agent",
     "collab_state": "closed",
-    "last_updated": "2026-06-25T20:55:37+00:00",
+    "last_updated": "2026-06-25T22:21:30+00:00",
     "deadline_soon": false
   },
   {
@@ -67,7 +67,7 @@
     "slack_channel": "project-sepsis",
     "github_repo": "Amsel11/proj-demo-sepsis",
     "collab_state": "closed",
-    "last_updated": "2026-06-25T20:55:37+00:00",
+    "last_updated": "2026-06-25T22:21:30+00:00",
     "deadline_soon": true
   },
   {
@@ -92,7 +92,7 @@
     "slack_channel": "project-llm-clinical",
     "github_repo": "Amsel11/proj-demo-healthllm",
     "collab_state": "open",
-    "last_updated": "2026-06-25T20:55:37+00:00",
+    "last_updated": "2026-06-25T22:21:30+00:00",
     "deadline_soon": false
   }
 ]
